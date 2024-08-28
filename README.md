@@ -343,6 +343,61 @@ Para general el reporte HTML con gráficos, abrir una terminal y copiar el coman
   npm run report
 ```
 
+## Github Actions
+
+Se modifica el archivo BrowserManager.ts para que los navegadores se ejecuten en segundo plano
+
+```bash
+const options: LaunchOptions = {
+    headless: true,
+}
+```
+
+Cuando se realiza un push o pull request se ejecutan los casos de prueba y se genera el reporte. Crear las carpetas .github/workflows y dentro crear el archivo .yml con la siguiente estructura
+
+```bash
+Ej:
+name: Playwright Tests
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+jobs:
+  test:
+    timeout-minutes: 60
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - uses: actions/setup-node@v4
+      with:
+        node-version: 18
+    - name: Install dependencies
+      run: npm ci
+    - name: Install Playwright Browsers
+      run: npx playwright install --with-deps
+    - name: Install Cucumber
+      run: npm i @cucumber/cucumber -D
+    - name: Install ts-node
+      run: npm i ts-node -D
+    - name: Install multiple-cucumber-html-reporter
+      run: npm install multiple-cucumber-html-reporter --save-dev
+    - name: Install fs-extra
+      run: npm i fs-extra -D
+    - name: Install dotenv
+      run: npm i dotenv -D
+    - name: Install cross-env
+      run: npm i cross-env -D
+    - name: Run Playwright tests
+      run: npm run test
+    - uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: playwright-report
+        path: test-results/
+        retention-days: 30
+```
+
 ## Authors
 
 - Jorge Franco
