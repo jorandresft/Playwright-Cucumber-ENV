@@ -317,6 +317,19 @@ export const getEnv = () => {
 }
 ```
 
+Dentro de la raiz del proyecto crear el archivo tsconfig.json con la siguiente estructura
+
+```bash
+{
+    "compilerOptions": {
+        "typeRoots": [
+            "./node_modules/@types",
+            "src/helper/types"
+        ]
+    }
+}
+```
+
 Crear los features y los steps según el proyecto.
 
 ## Ejecutar Tests
